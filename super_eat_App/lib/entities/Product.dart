@@ -4,6 +4,7 @@ class Product
   String name;
   double price;
   String image;
+  String description;
   bool? userAddToCart;
   bool? includeTip;
   bool? isHamburger;
@@ -15,6 +16,7 @@ class Product
     this.name='',
     this.price=0.00,
     this.image='',
+    required this.description,
     this.userAddToCart=false,
     this.includeTip=false,
     this.isHamburger=false,

@@ -4,6 +4,9 @@ import '../shared/colors.dart';
 import '../shared/inputFields.dart';
 import '../shared/sectionHeader_widgets.dart';
 import '../shared/buttons.dart';
+import 'dart:io'; // 用于处理文件
+
+
 
 class AddItemPage extends StatefulWidget {
   final String? pageTitle;
@@ -17,6 +20,10 @@ class AddItemPage extends StatefulWidget {
 class _AddItemPageState extends State<AddItemPage> {
   String? selectedCategory;
   bool isTipIncluded = false;
+  File? _imageFile; // 用于存储上传的图片文件
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,6 +40,39 @@ class _AddItemPageState extends State<AddItemPage> {
                   Text('Add An Item', style: h3),
                   Text('Item Name:', style: h6),
                   TextInput('Item Name'),
+                  // 上传图片区域
+                  Text('Upload Item Image:', style: h6),
+                  GestureDetector(
+                    onTap: () async {
+                      // 打开图片选择器（需进一步实现，具体使用 `image_picker` 包）
+                      // File? image = await pickImage();
+                      // setState(() => _imageFile = image);
+                      // 示例：此处模拟选择图片
+                      print('Image upload button tapped!');
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.all(15),
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200],
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.grey[400]!),
+                      ),
+                      child: _imageFile == null
+                          ? const Center(
+                        child: Text(
+                          'Tap to upload image',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      )
+                          : Image.file(
+                        _imageFile!,
+                        fit: BoxFit.cover,
+                        height: 150,
+                      ),
+                    ),
+                  ),
                   Text('Item Price:', style: h6),
                   TextInput('Item Price'),
 
@@ -104,7 +144,7 @@ class _AddItemPageState extends State<AddItemPage> {
               ),
             ],
           ),
-          height: 500,
+          height: 750,
           width: double.infinity,
           decoration: authPlateDecoration,
         ),

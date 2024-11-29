@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../entities/Product.dart';
 import '../shared/colors.dart';
 import '../shared/styles.dart';
+import '../entities/CartItems.dart';
 
 Widget foodItem(Product food,
     {double? imgWidth, onLike, onTapped, bool isProductPage = false}) {
@@ -68,6 +69,10 @@ Widget foodItem(Product food,
                       TextButton(
                         onPressed: () {
                           // 处理购物车点击事件
+                          Cartitems.addToCart(food, 1); // 添加商品到购物车
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   SnackBar(content: Text('${product.name} added to cart')),
+                          // );
                         },
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.white,

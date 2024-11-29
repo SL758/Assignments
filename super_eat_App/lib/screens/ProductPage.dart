@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../entities/Product.dart';
+import '../entities/CartItems.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import '../shared/partials.dart';
@@ -9,7 +10,7 @@ class ProductPage extends StatefulWidget {
   final String pageTitle;
   final Product productData;
 
-  ProductPage({Key? key, this.pageTitle='', Product? productData}) : productData = productData ?? Product(),super(key: key);
+  ProductPage({Key? key, this.pageTitle='', Product? productData}) : productData = productData ?? Product(description: ''),super(key: key);
 
   @override
   _ProductPageState createState() => _ProductPageState();
@@ -52,7 +53,14 @@ class _ProductPageState extends State<ProductPage> {
                           // Text(widget.productData.price, style: h3),
                           Container(
                             margin: EdgeInsets.only(top: 100, bottom: 20),
-
+                            child: Text(
+                              widget.productData.description,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
                           Container(
                             margin: EdgeInsets.only(top: 10, bottom: 25),
@@ -72,9 +80,7 @@ class _ProductPageState extends State<ProductPage> {
                                           _quantity += 1;
                                         });
                                       },
-                                      child: Center(
-                                        child: Icon(Icons.add),
-                                      ),
+                                      child: const Icon(Icons.add),
                                       style: OutlinedButton.styleFrom(
                                         minimumSize: Size(55, 55),
                                         padding: EdgeInsets.zero,
@@ -93,9 +99,7 @@ class _ProductPageState extends State<ProductPage> {
                                           _quantity -= 1;
                                         });
                                       },
-                                      child: Center(
-                                        child: Icon(Icons.remove),
-                                      ),
+                                      child: const Icon(Icons.remove),
                                       style: OutlinedButton.styleFrom(
                                         minimumSize: Size(55, 55),
                                         padding: EdgeInsets.zero,
@@ -111,14 +115,22 @@ class _ProductPageState extends State<ProductPage> {
 
                           Container(
                             width: 180,
-                            child: seFlatBtn('Add to Cart', () {}),
+                            child: seFlatBtn('Add to Cart', () {
+                              Cartitems.addToCart(widget.productData, _quantity);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                  content: Text(
+                                  '${widget.productData.name} added to cart'),
+                                  ),
+                              );
+                            }),
                           )
                         ],
                       ),
                       decoration: BoxDecoration(
                           color: white,
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                                 blurRadius: 15,
                                 spreadRadius: 5,

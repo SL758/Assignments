@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import '../entities/CartItems.dart';
 import '../shared/styles.dart';
 import '../shared/colors.dart';
 import './ProductPage.dart';
+import '../shared/buttons.dart';
 import './AddItemPage.dart';
 import '../entities/Product.dart';
 import '../shared/partials.dart';
 import '../shared/category_widgets.dart';
 import '../shared/sectionHeader_widgets.dart';
+import 'CartPage.dart';
+
 
 class HomeDashboard extends StatefulWidget {
   final String pageTitle;
@@ -36,7 +40,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
       Text('Tab1'),
       Text('Tab2'),
       homeTab(context, selectedCategory, updateCategories),
-      Text('Tab4'),
+      CartPage(),
       AddItemPage(),
     ];
 
@@ -98,6 +102,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: "images/chickenburger.png",
       price: 25,
       userAddToCart: true,
+      description: "A juicy grilled chicken burger with fresh vegetables.",
       isHamburger: true,
     ),
     Product(
@@ -106,6 +111,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: "images/Cheeseburger.png",
       price: 15,
       userAddToCart: false,
+      description: "A classic cheeseburger with a melted cheddar topping.",
       isHamburger: true,
     ),
     Product(
@@ -114,6 +120,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: 'images/extralongburger.png',
       price: 10.99,
       userAddToCart: false,
+      description: "A delicious extra-long burger with crispy lettuce.",
       isHamburger: true,
     ),
     Product(
@@ -122,6 +129,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: "images/veggieburger.png",
       price: 50.00,
       userAddToCart: true,
+      description: "A delicious extra-long burger with crispy lettuce.",
       isHamburger: true,
     ),
   ];
@@ -133,6 +141,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: "images/beefSalad.png",
       price: 45.12,
       userAddToCart: true,
+      description: "A flavorful beef salad with a tangy vinaigrette dressing.",
       isHamburger: null,
     ),
     Product(
@@ -141,6 +150,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: "images/caesarSalad.png",
       price: 25.12,
       userAddToCart: true,
+      description: "A classic Caesar salad with crunchy croutons and parmesan.",
       isHamburger: null,
     ),
     Product(
@@ -149,9 +159,12 @@ Widget homeTab(BuildContext context, String selectedCategory,
       image: "images/chickenSalad.png",
       price: 15,
       userAddToCart: true,
+      description: "A hearty chicken salad with fresh greens and creamy dressing.",
       isHamburger: null,
     ),
   ];
+
+
   List<Product> selects = [];
 
   switch (selectedCategory) {
@@ -174,16 +187,20 @@ Widget homeTab(BuildContext context, String selectedCategory,
       spacing: 1, // 每列之间的间距
       runSpacing: 20, // 每行之间的间距
       children: selects.map((product) {
+
         return Container(
           width: MediaQuery.of(context).size.width / 2 -
               15, // 每个 `foodItem` 占一半宽度（减去间距）
+
           child: foodItem(
             product,
             imgWidth: 250,
             onLike: () {},
             onTapped: () {
-              //有bug
-              print('Tapped on: ${product.name}');
+              // // Cartitems.addToCart(product, 1); // 添加商品到购物车
+              // ScaffoldMessenger.of(context).showSnackBar(
+              // //   SnackBar(content: Text('${product.name} added to cart')),
+              // // );
               Navigator.push(
                 context,
                 MaterialPageRoute(
