@@ -10,6 +10,8 @@ import '../shared/partials.dart';
 import '../shared/category_widgets.dart';
 import '../shared/sectionHeader_widgets.dart';
 import 'CartPage.dart';
+import 'Map.dart'; // 导入 Map.dart 文件
+import './Store.dart'; // 添加新的页面引用
 
 
 class HomeDashboard extends StatefulWidget {
@@ -37,8 +39,8 @@ class _HomeDashboardState extends State<HomeDashboard> {
   @override
   Widget build(BuildContext context) {
     final _tabs = [
-      Text('Tab1'),
-      Text('Tab2'),
+      StorePage(),
+      MapPage(pageTitle: 'Map'), // Tab2 显示 MapPage
       homeTab(context, selectedCategory, updateCategories),
       CartPage(),
       AddItemPage(),
@@ -73,7 +75,7 @@ class _HomeDashboardState extends State<HomeDashboard> {
               label: 'My Cart',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.add_business),
               label: 'Add Item',
             )
           ],
@@ -104,6 +106,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       userAddToCart: true,
       description: "A juicy grilled chicken burger with fresh vegetables.",
       isHamburger: true,
+      isRecommended:true,
     ),
     Product(
       id: 1,
@@ -133,7 +136,45 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: true,
     ),
   ];
-
+  List<Product> pizza = [
+    Product(
+      id: 0,
+      name: "Hawaii Pizza",
+      image: "images/Hawaiianpizza.jpg",
+      price: 18,
+      userAddToCart: true,
+      description: "Nice Pizza.",
+      isHamburger: null,
+      isRecommended:true,
+    ),
+    Product(
+      id: 1,
+      name: "pepperoni pizza",
+      image: "images/Peperonipizza.jpeg",
+      price: 10,
+      userAddToCart: false,
+      description: "pizza with pepperoni meat.",
+      isHamburger: null,
+    ),
+    Product(
+      id: 2,
+      name: "roast chicken pizza",
+      image: 'images/Roastchickenpizza.jpeg',
+      price: 12,
+      userAddToCart: false,
+      description: "pizza with roast chicken and mushroom.",
+      isHamburger: null,
+    ),
+    Product(
+      id: 3,
+      name: "Veggie Pizza",
+      image: "images/Veggiepizza.jpeg",
+      price: 8.00,
+      userAddToCart: true,
+      description: "A pizza with many kinds of vegetable.",
+      isHamburger: null,
+    ),
+  ];
   List<Product> salads = [
     Product(
       id: 0,
@@ -170,6 +211,9 @@ Widget homeTab(BuildContext context, String selectedCategory,
   switch (selectedCategory) {
     case 'Hamburger':
       selects = hamburgers.toList();
+      break;
+    case 'Pizza':
+      selects = pizza.toList();
       break;
     case 'Salad':
       selects = salads.toList();

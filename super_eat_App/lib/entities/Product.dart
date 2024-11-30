@@ -7,6 +7,7 @@ class Product
   String description;
   bool? userAddToCart;
   bool? includeTip;
+  bool? isRecommended;
   bool? isHamburger;
   //isHamburger=true:Hamburger,
   //isHamburger=false:Pizza,
@@ -19,6 +20,7 @@ class Product
     required this.description,
     this.userAddToCart=false,
     this.includeTip=false,
+    this.isRecommended=false,
     this.isHamburger=false,
   });
 

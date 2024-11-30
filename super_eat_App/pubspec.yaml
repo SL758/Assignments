@@ -33,6 +33,7 @@ dependencies:
   page_transition: ^2.0.7
   material_design_icons_flutter: ^5.0.0
   image_picker: ^0.8.7
+  path_provider: ^2.0.11
   font_awesome_flutter: ^10.1.0
 
   # The following adds the Cupertino Icons font to your application.
@@ -70,6 +71,10 @@ flutter:
     - images/extralongburger.png
     - images/veggieburger.png
     - images/Cheeseburger.png
+    - images/Roastchickenpizza.jpeg
+    - images/Hawaiianpizza.jpg
+    - images/Peperonipizza.jpeg
+    - images/Veggiepizza.jpeg
     - images/beefSalad.png
     - images/caesarSalad.png
     - images/chickenSalad.png
