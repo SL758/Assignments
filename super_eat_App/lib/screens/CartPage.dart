@@ -94,8 +94,22 @@ class _CartPageState extends State<CartPage> {
               itemCount: Cartitems.items.length,
               itemBuilder: (context, index) {
                 final item = Cartitems.items[index];
-                return Padding(
+                return Container(
+                  margin: const EdgeInsets.only(bottom: 10),
+
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5),
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: const Offset(0, 3), // 阴影偏移
+                      ),
+                    ],
+                  ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [

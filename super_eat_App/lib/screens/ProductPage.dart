@@ -120,7 +120,7 @@ class _ProductPageState extends State<ProductPage> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        '${widget.productData.name} added to cart'),
+                                        '${widget.productData.name}, *${_quantity} added to cart'),
                                   ),
                                 );
                               }),
@@ -142,7 +142,7 @@ class _ProductPageState extends State<ProductPage> {
                       alignment: Alignment.center,
                       child: SizedBox(
                         width: 200,
-                        height: 300,
+                        height: 250,
                         child: foodItem(widget.productData,
                             isProductPage: true,
                             onTapped: () {},

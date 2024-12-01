@@ -25,7 +25,7 @@ class Cartitems {
       items[index].quantity += quantity;
     } else {
       // 如果商品不存在，添加新的购物车项
-      items.add(Cartitems(product: product));
+      items.add(Cartitems(product: product, quantity: quantity));
     }
   }
 

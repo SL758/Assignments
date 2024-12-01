@@ -7,7 +7,7 @@ import '../shared/buttons.dart';
 import './AddItemPage.dart';
 import '../entities/Product.dart';
 import '../shared/partials.dart';
-import '../shared/category_widgets.dart';
+import '../shared/categoryWidgets.dart';
 import '../shared/sectionHeader_widgets.dart';
 import 'CartPage.dart';
 import 'Map.dart'; // 导入 Map.dart 文件
@@ -99,7 +99,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
   // am to start another template
   List<Product> hamburgers = [
     Product(
-      id: 0,
+      id: 1000,
       name: "Chicken Burger",
       image: "images/chickenburger.png",
       price: 25,
@@ -109,7 +109,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isRecommended:true,
     ),
     Product(
-      id: 1,
+      id: 1001,
       name: "Cheese Burger",
       image: "images/Cheeseburger.png",
       price: 15,
@@ -118,7 +118,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: true,
     ),
     Product(
-      id: 2,
+      id: 1002,
       name: "Extra Long Burger",
       image: 'images/extralongburger.png',
       price: 10.99,
@@ -127,7 +127,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: true,
     ),
     Product(
-      id: 3,
+      id: 1003,
       name: "Veggie Burger",
       image: "images/veggieburger.png",
       price: 50.00,
@@ -138,7 +138,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
   ];
   List<Product> pizza = [
     Product(
-      id: 0,
+      id: 2000,
       name: "Hawaii Pizza",
       image: "images/Hawaiianpizza.jpg",
       price: 18,
@@ -148,7 +148,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isRecommended:true,
     ),
     Product(
-      id: 1,
+      id: 2001,
       name: "pepperoni pizza",
       image: "images/Peperonipizza.jpeg",
       price: 10,
@@ -157,7 +157,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: null,
     ),
     Product(
-      id: 2,
+      id: 2002,
       name: "roast chicken pizza",
       image: 'images/Roastchickenpizza.jpeg',
       price: 12,
@@ -166,7 +166,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: null,
     ),
     Product(
-      id: 3,
+      id: 2003,
       name: "Veggie Pizza",
       image: "images/Veggiepizza.jpeg",
       price: 8.00,
@@ -177,7 +177,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
   ];
   List<Product> salads = [
     Product(
-      id: 0,
+      id: 3000,
       name: "Beef Salad",
       image: "images/beefSalad.png",
       price: 45.12,
@@ -186,7 +186,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: null,
     ),
     Product(
-      id: 1,
+      id: 3001,
       name: "Caesar Salad",
       image: "images/caesarSalad.png",
       price: 25.12,
@@ -195,7 +195,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       isHamburger: null,
     ),
     Product(
-      id: 2,
+      id: 3002,
       name: "Chicken Salad",
       image: "images/chickenSalad.png",
       price: 15,
