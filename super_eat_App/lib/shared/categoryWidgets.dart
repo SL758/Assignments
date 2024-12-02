@@ -17,7 +17,8 @@ class HeaderTopCategories extends StatefulWidget {
 }
 
 class _HeaderTopCategoriesState extends State<HeaderTopCategories> {
-  String selectedCategory = 'Pizza';
+  // String selectedCategory = 'Pizza';
+  String selectedCategory = '';
 
   @override
   Widget build(BuildContext context) {

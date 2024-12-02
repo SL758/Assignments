@@ -12,7 +12,9 @@ import '../shared/sectionHeader_widgets.dart';
 import 'CartPage.dart';
 import 'Map.dart'; // 导入 Map.dart 文件
 import './Store.dart'; // 添加新的页面引用
-
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert'; // 用于 JSON 编解码
+import '../shared/local_storage_helper.dart'; // 导入工具类文件
 
 class HomeDashboard extends StatefulWidget {
   final String pageTitle;
@@ -28,7 +30,7 @@ class HomeDashboard extends StatefulWidget {
 
 class _HomeDashboardState extends State<HomeDashboard> {
   int _selectedIndex = 2;
-  String selectedCategory = 'Pizza';
+  String selectedCategory = 'Hamburger';
 
   void updateCategories(String newCategory) {
     setState(() {
@@ -36,12 +38,56 @@ class _HomeDashboardState extends State<HomeDashboard> {
     });
   }
 
+  // 数据列表
+  List<Product> hamburgers = [];
+  List<Product> pizzas = [];
+  List<Product> salads = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAllCategories(); // 加载所有分类数据
+  }
+
+  // 加载所有分类数据
+  Future<void> _loadAllCategories() async {
+    // 加载 Hamburger 数据
+    List<Product> loadedHamburgers = await _loadCategory('hamburgers', LocalStorageHelper.initializeDefaultHamburgers);
+
+    // 加载 Pizza 数据
+    List<Product> loadedPizzas = await _loadCategory('pizzas', LocalStorageHelper.initializeDefaultPizzas);
+
+    // 加载 Salad 数据
+    List<Product> loadedSalads = await _loadCategory('salads', LocalStorageHelper.initializeDefaultSalads);
+
+    // 更新 UI
+    setState(() {
+      hamburgers = loadedHamburgers;
+      pizzas = loadedPizzas;
+      salads = loadedSalads;
+    });
+  }
+
+  // 通用的加载方法
+  Future<List<Product>> _loadCategory(
+      String key, Future<void> Function() initializeDefault) async {
+    List<Product> loadedItems = await LocalStorageHelper.loadProductsFromLocalStorage(key);
+    if (loadedItems.isEmpty) {
+      // 如果本地没有数据，则初始化默认值
+      await initializeDefault();
+      loadedItems = await LocalStorageHelper.loadProductsFromLocalStorage(key);
+    }
+    return loadedItems;
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     final _tabs = [
       StorePage(),
       MapPage(pageTitle: 'Map'), // Tab2 显示 MapPage
-      homeTab(context, selectedCategory, updateCategories),
+      homeTab(context, selectedCategory, updateCategories,hamburgers,pizzas,salads),
       CartPage(),
       AddItemPage(),
     ];
@@ -56,6 +102,16 @@ class _HomeDashboardState extends State<HomeDashboard> {
               style: logoWhiteStyle, textAlign: TextAlign.center),
         ),
         body: _tabs[_selectedIndex],
+
+        //刷新整个页面
+        floatingActionButton: FloatingActionButton(
+          onPressed: () async {
+            // 点击按钮时刷新数据
+            _loadAllCategories(); // 重新加载数据
+          },
+          child: Icon(Icons.refresh), // 使用刷新图标
+        ),
+
         bottomNavigationBar: BottomNavigationBar(
           items: <BottomNavigationBarItem>[
             BottomNavigationBarItem(
@@ -94,116 +150,8 @@ class _HomeDashboardState extends State<HomeDashboard> {
 }
 
 Widget homeTab(BuildContext context, String selectedCategory,
-    Function(String) updateCategories) {
-  // will pick it up from here
-  // am to start another template
-  List<Product> hamburgers = [
-    Product(
-      id: 1000,
-      name: "Chicken Burger",
-      image: "images/chickenburger.png",
-      price: 25,
-      userAddToCart: true,
-      description: "A juicy grilled chicken burger with fresh vegetables.",
-      isHamburger: true,
-      isRecommended:true,
-    ),
-    Product(
-      id: 1001,
-      name: "Cheese Burger",
-      image: "images/Cheeseburger.png",
-      price: 15,
-      userAddToCart: false,
-      description: "A classic cheeseburger with a melted cheddar topping.",
-      isHamburger: true,
-    ),
-    Product(
-      id: 1002,
-      name: "Extra Long Burger",
-      image: 'images/extralongburger.png',
-      price: 10.99,
-      userAddToCart: false,
-      description: "A delicious extra-long burger with crispy lettuce.",
-      isHamburger: true,
-    ),
-    Product(
-      id: 1003,
-      name: "Veggie Burger",
-      image: "images/veggieburger.png",
-      price: 50.00,
-      userAddToCart: true,
-      description: "A delicious extra-long burger with crispy lettuce.",
-      isHamburger: true,
-    ),
-  ];
-  List<Product> pizza = [
-    Product(
-      id: 2000,
-      name: "Hawaii Pizza",
-      image: "images/Hawaiianpizza.jpg",
-      price: 18,
-      userAddToCart: true,
-      description: "Nice Pizza.",
-      isHamburger: null,
-      isRecommended:true,
-    ),
-    Product(
-      id: 2001,
-      name: "pepperoni pizza",
-      image: "images/Peperonipizza.jpeg",
-      price: 10,
-      userAddToCart: false,
-      description: "pizza with pepperoni meat.",
-      isHamburger: null,
-    ),
-    Product(
-      id: 2002,
-      name: "roast chicken pizza",
-      image: 'images/Roastchickenpizza.jpeg',
-      price: 12,
-      userAddToCart: false,
-      description: "pizza with roast chicken and mushroom.",
-      isHamburger: null,
-    ),
-    Product(
-      id: 2003,
-      name: "Veggie Pizza",
-      image: "images/Veggiepizza.jpeg",
-      price: 8.00,
-      userAddToCart: true,
-      description: "A pizza with many kinds of vegetable.",
-      isHamburger: null,
-    ),
-  ];
-  List<Product> salads = [
-    Product(
-      id: 3000,
-      name: "Beef Salad",
-      image: "images/beefSalad.png",
-      price: 45.12,
-      userAddToCart: true,
-      description: "A flavorful beef salad with a tangy vinaigrette dressing.",
-      isHamburger: null,
-    ),
-    Product(
-      id: 3001,
-      name: "Caesar Salad",
-      image: "images/caesarSalad.png",
-      price: 25.12,
-      userAddToCart: true,
-      description: "A classic Caesar salad with crunchy croutons and parmesan.",
-      isHamburger: null,
-    ),
-    Product(
-      id: 3002,
-      name: "Chicken Salad",
-      image: "images/chickenSalad.png",
-      price: 15,
-      userAddToCart: true,
-      description: "A hearty chicken salad with fresh greens and creamy dressing.",
-      isHamburger: null,
-    ),
-  ];
+    Function(String) updateCategories,List<Product> hamburgers,
+    List<Product> pizzas,List<Product> salads) {
 
 
   List<Product> selects = [];
@@ -213,7 +161,7 @@ Widget homeTab(BuildContext context, String selectedCategory,
       selects = hamburgers.toList();
       break;
     case 'Pizza':
-      selects = pizza.toList();
+      selects = pizzas.toList();
       break;
     case 'Salad':
       selects = salads.toList();

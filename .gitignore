@@ -1,2 +1,39 @@
-# Ignore AppData and other irrelevant directories
-AppData/
+# Ignore system and personal files
+Application Data/
+Cookies/
+Local Settings/
+My Documents/
+NetHood/
+PrintHood/
+Recent/
+SendTo/
+Start Menu/
+Templates/
+
+# Ignore common IDE and system files
+.vscode/
+.idea/
+*.log
+*.bak
+*.swp
+*.tmp
+*.DS_Store
+
+# Ignore other personal folders
+3D Objects/
+Contacts/
+Creative Cloud Files/
+Desktop/
+Documents/
+Downloads/
+Favorites/
+Music/
+OneDrive/
+Pictures/
+Saved Games/
+Videos/
+
+# Ignore NTUSER files and logs
+NTUSER.DAT
+NTUSER.DAT{*}.TM.blf
+NTUSER.DAT{*}.TMContainer*
