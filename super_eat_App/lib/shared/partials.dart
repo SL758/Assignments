@@ -3,6 +3,8 @@ import '../entities/Product.dart';
 import '../shared/colors.dart';
 import '../shared/styles.dart';
 import '../entities/CartItems.dart';
+import 'dart:convert';  // 导入base64解码库
+import 'dart:typed_data';  // 导入Uint8List
 
 Widget foodItem(Product food,
     {double? imgWidth, onLike, onTapped, bool isProductPage = false}) {
@@ -49,10 +51,28 @@ Widget foodItem(Product food,
           Expanded(
             child: ClipRRect(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(5)),
-              child: Image.asset(
-                food.image,
+              child: food.image != null && food.image!.isNotEmpty
+                  ? food.image!.endsWith('.png') || food.image!.endsWith('.jpg') // 判断是否是 asset 路径
+                  ? Image.asset(
+                food.image!,
                 width: 180,
                 fit: BoxFit.cover, // 确保图片占满空间
+              )
+                  : food.image!.startsWith('http') // 判断是否是网络图片 URL
+                  ? Image.network(
+                food.image!,
+                width: 180,
+                fit: BoxFit.cover,
+              )
+                  : Image.memory( // 否则直接尝试解码 Base64
+                base64Decode(food.image!),
+                width: 180,
+                fit: BoxFit.cover,
+              )
+                  : Image.asset(
+                'assets/placeholder_image.png', // 加载占位符图片
+                width: 180,
+                fit: BoxFit.cover,
               ),
             ),
           ),

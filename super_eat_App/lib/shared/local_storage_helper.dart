@@ -53,7 +53,23 @@ class LocalStorageHelper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? productList = prefs.getStringList(key);
     if (productList != null) {
-      return productList.map((product) => Product.fromJson(jsonDecode(product))).toList();
+      return productList.map((product) {
+        var productData = jsonDecode(product);
+
+        // 如果图片是 Base64 编码字符串，解码成字节数据
+        if (productData['image'] != null) {
+          // 检查图片是否是 Base64 编码字符串
+          if (productData['image']!.startsWith('data:image')) {
+            // 如果是 Base64 编码，解码
+            productData['image'] = base64Decode(productData['image'].split(',')[1]);
+          } else {
+            // 如果是 asset 图片，保留路径
+            // (你可以根据你的需求调整这个逻辑)
+          }
+        }
+
+        return Product.fromJson(productData);
+      }).toList();
     } else {
       return [];
     }
@@ -109,30 +125,30 @@ class LocalStorageHelper {
         isHamburger: null,
         isRecommended: true,
       ),
-      Product(
-        id: 2001,
-        name: "pepperoni pizza",
-        image: "images/Peperonipizza.jpeg",
-        price: 10,
-        description: "pizza with pepperoni meat.",
-        isHamburger: null,
-      ),
-      Product(
-        id: 2002,
-        name: "roast chicken pizza",
-        image: 'images/Roastchickenpizza.jpeg',
-        price: 12,
-        description: "pizza with roast chicken and mushroom.",
-        isHamburger: null,
-      ),
-      Product(
-        id: 2003,
-        name: "Veggie Pizza",
-        image: "images/Veggiepizza.jpeg",
-        price: 8.00,
-        description: "A pizza with many kinds of vegetable.",
-        isHamburger: null,
-      ),
+      // Product(
+      //   id: 2001,
+      //   name: "pepperoni pizza",
+      //   image: "images/Peperonipizza.jpeg",
+      //   price: 10,
+      //   description: "pizza with pepperoni meat.",
+      //   isHamburger: null,
+      // ),
+      // Product(
+      //   id: 2002,
+      //   name: "roast chicken pizza",
+      //   image: 'images/Roastchickenpizza.jpeg',
+      //   price: 12,
+      //   description: "pizza with roast chicken and mushroom.",
+      //   isHamburger: null,
+      // ),
+      // Product(
+      //   id: 2003,
+      //   name: "Veggie Pizza",
+      //   image: "images/Veggiepizza.jpeg",
+      //   price: 8.00,
+      //   description: "A pizza with many kinds of vegetable.",
+      //   isHamburger: null,
+      // ),
     ];
     await saveProductsToLocalStorage('pizzas', defaultPizzas);
   }

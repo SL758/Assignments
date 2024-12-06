@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../entities/CartItems.dart';
 import '../entities/Product.dart';
 import 'HomeDashboard.dart';
+import 'dart:convert';
 
 class CartPage extends StatefulWidget {
   final String? pageTitle;
@@ -120,7 +121,7 @@ class _CartPageState extends State<CartPage> {
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(8),
                           image: DecorationImage(
-                            image: AssetImage(item.product.image),
+                            image: _getImageProvider(item.product.image),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -266,5 +267,22 @@ class _CartPageState extends State<CartPage> {
         ],
       ),
     );
+  }
+}
+ImageProvider _getImageProvider(String imagePathOrBase64) {
+  // 检查是否是 Asset 图片（通过后缀名判断）
+  if (imagePathOrBase64.endsWith('.png') ||
+      imagePathOrBase64.endsWith('.jpg') ||
+      imagePathOrBase64.endsWith('.jpeg')) {
+    return AssetImage(imagePathOrBase64);
+  }
+
+  // 尝试解码 Base64
+  try {
+    final decodedBytes = base64Decode(imagePathOrBase64);
+    return MemoryImage(decodedBytes);
+  } catch (e) {
+    // 解码失败，返回默认占位符
+    return AssetImage('assets/placeholder_image.png');
   }
 }

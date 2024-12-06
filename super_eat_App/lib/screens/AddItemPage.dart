@@ -11,6 +11,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'HomeDashboard.dart';
 import 'package:image_picker/image_picker.dart';
+import 'dart:html' as html;
+import 'dart:typed_data'; // 用于处理字节数组
+import 'package:flutter/foundation.dart'; // 需要导入kIsWeb
+import 'dart:convert'; // 用于 Base64 编码和解码
 
 class AddItemPage extends StatefulWidget {
   final String? pageTitle;
@@ -30,61 +34,64 @@ class _AddItemPageState extends State<AddItemPage> {
   bool isRecommended = false;
   bool categoryError = false; // 新增一个状态变量，用来控制错误消息的显示
 
-  File? _selectedImage; // 本地选择的图片文件
+  Uint8List? _selectedImage; // 本地选择的图片文件
 
-  void _addItem() {
+  void _addItem() async{
     setState(() {
       categoryError = selectedCategory == null; // 如果没有选择类别，显示错误消息
     });
 
     if (_formKey.currentState?.validate() ?? false) {
-
       if (selectedCategory == null) {
         return; // 如果没有选择类别，停止执行下面的代码
       }
-
-      final newItem = Product(
-        name: _nameController.text.trim(),
-        price: double.parse(_priceController.text.trim()),
-        description: _descriptionController.text.trim(),
-        isHamburger: selectedCategory == "Burger"
-            ? true
-            : selectedCategory == "Pizza"
-            ? false
-            : null,
-        isRecommended: isRecommended,
-      );
-
-      // 根据选择的类别来保存数据
-      if (selectedCategory == 'Burger') {
-        LocalStorageHelper.saveProductsToLocalStorage('hamburgers', [newItem]);
-      } else if (selectedCategory == 'Pizza') {
-        LocalStorageHelper.saveProductsToLocalStorage('pizzas', [newItem]);
-      } else if (selectedCategory == 'Salad') {
-        LocalStorageHelper.saveProductsToLocalStorage('salads', [newItem]);
-      }
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Item added successfully!')),
-      );
-
-      // 清空表单
-      _formKey.currentState?.reset();
-      _nameController.clear();
-      _priceController.clear();
-      _descriptionController.clear();
-      setState(() {
-        selectedCategory = null;
-        isRecommended = false;
-        categoryError = false; // 重置错误状态
-      });
     }
-    // else {
-    //   // 如果表单验证失败，提示错误
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //     SnackBar(content: Text('Please fill in all required fields')),
-    //   );
-    // }
+
+    String imageBase64 = '';
+    if (_selectedImage != null) {
+      // 将图片转换为 Base64 字符串
+      imageBase64 = base64Encode(_selectedImage!);
+    }
+
+    final newItem = Product(
+      name: _nameController.text.trim(),
+      price: double.parse(_priceController.text.trim()),
+      description: _descriptionController.text.trim(),
+      isHamburger: selectedCategory == "Burger"
+          ? true
+          : selectedCategory == "Pizza"
+          ? false
+          : null,
+      isRecommended: isRecommended,
+      image: imageBase64, // 存储图片路径
+    );
+
+    // 根据选择的类别来保存数据
+    if (selectedCategory == 'Burger') {
+      LocalStorageHelper.saveProductsToLocalStorage('hamburgers', [newItem]);
+    } else if (selectedCategory == 'Pizza') {
+      LocalStorageHelper.saveProductsToLocalStorage('pizzas', [newItem]);
+    } else if (selectedCategory == 'Salad') {
+      LocalStorageHelper.saveProductsToLocalStorage('salads', [newItem]);
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Item added successfully!')),
+    );
+
+    // 清空表单
+    _formKey.currentState?.reset();
+    _nameController.clear();
+    _priceController.clear();
+    _descriptionController.clear();
+
+    setState(() {
+      selectedCategory = null;
+      isRecommended = false;
+      categoryError = false; // 重置错误状态
+      _selectedImage = null; // 重置图片选择
+    });
+
   }
 
 
@@ -92,29 +99,29 @@ class _AddItemPageState extends State<AddItemPage> {
 
   Future<void> _pickAndSaveImage() async {
     try {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile == null) return;
+      // 选择图片
+      html.FileUploadInputElement uploadInput = html.FileUploadInputElement();
+      uploadInput.accept = 'image/*';
+      uploadInput.click();
 
-      final appDir = await getApplicationDocumentsDirectory();
-      final imagesDir = Directory(path.join(appDir.path, 'images'));
-      if (!imagesDir.existsSync()) {
-        imagesDir.createSync(recursive: true);
-      }
+      uploadInput.onChange.listen((e) async {
+        final files = uploadInput.files;
+        if (files!.isEmpty) return;
 
-      final fileName = path.basename(pickedFile.path);
-      final savedImage = await File(pickedFile.path).copy(
-        path.join(imagesDir.path, fileName),
-      );
-
-      setState(() {
-        _selectedImage = savedImage;
+        // 获取文件内容并转换为 Base64 编码
+        final reader = html.FileReader();
+        reader.readAsDataUrl(files[0]); // 读取为 Base64 编码数据
+        reader.onLoadEnd.listen((e) {
+          setState(() {
+            _selectedImage = base64Decode(reader.result.toString().split(',')[1]); // 获取 Base64 编码的图片数据
+          });
+        });
       });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("图片已成功保存到 ${imagesDir.path}")),
-      );
     } catch (e) {
-      print("图片选择或保存失败：$e");
+      print("图片选择失败：$e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("图片选择失败")),
+      );
     }
   }
 
@@ -147,7 +154,7 @@ class _AddItemPageState extends State<AddItemPage> {
                           color: Colors.grey[200],
                         ),
                         child: _selectedImage != null
-                            ? Image.file(_selectedImage!, fit: BoxFit.cover)
+                            ? Image.memory(_selectedImage!, fit: BoxFit.cover)
                             : Center(
                           child: Icon(Icons.add_a_photo, size: 50,
                               color: Colors.grey),
