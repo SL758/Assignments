@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapPage extends StatefulWidget {
   final String pageTitle;
@@ -10,16 +11,62 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
+  static const CameraPosition _initialPosition =
+  CameraPosition(target: LatLng(43.4725, -80.5331), zoom: 11.5);
+
+  late GoogleMapController _mapController;
+  Set<Marker> _markers = Set();  // Use Set instead of List for markers.
+
+  @override
+  void initState() {
+    super.initState();
+    // Add some initial markers
+    _addMarkers();
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _mapController = controller;
+  }
+
+  // Add markers to the map
+  void _addMarkers() {
+    setState(() {
+      _markers.add(Marker(
+        markerId: MarkerId("Super Burger1"),
+        position: LatLng(43.4725, -80.5331),
+        infoWindow: InfoWindow(title: "Super Burger"),
+      ));
+
+      _markers.add(Marker(
+        markerId: MarkerId("Super Burger2"),
+        position: LatLng(43.4787, -80.5251),
+        infoWindow: InfoWindow(title: "Super Burger"),
+      ));
+
+      _markers.add(Marker(
+        markerId: MarkerId("Super Burger3"),
+        position: LatLng(43.4643, -80.5204),
+        infoWindow: InfoWindow(title: "Super Burger"),
+      ));
+
+      _markers.add(Marker(
+        markerId: MarkerId("Super Burger4"),
+        position: LatLng(43.4515, -80.5044),
+        infoWindow: InfoWindow(title: "Super Burger"),
+      ));
+
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200], // 页面背景颜色
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white, // AppBar背景颜色
+        backgroundColor: Colors.white,
         centerTitle: true,
         title: Text(
-          widget.pageTitle, // 页面标题
+          widget.pageTitle,
           style: const TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -29,40 +76,14 @@ class _MapPageState extends State<MapPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // 返回上一页面
+            Navigator.pop(context);  // Go back to previous screen
           },
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: Center(
-              child: Container(
-                margin: const EdgeInsets.all(16), // 留出页面边距
-                width: double.infinity,
-                height: double.infinity,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300], // 中间空白部分的背景颜色
-                  borderRadius: BorderRadius.circular(10), // 圆角边框
-                  border: Border.all(
-                    color: Colors.grey, // 边框颜色
-                    width: 2, // 边框宽度
-                  ),
-                ),
-                child: const Center(
-                  child: Text(
-                    'Google Map Placeholder', // 用于占位的文字
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: _initialPosition,
+        markers: _markers,  // Add markers to the map
       ),
     );
   }
